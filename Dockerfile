@@ -1,4 +1,5 @@
 FROM robsharp/rpi-transmission
+MAINTAINER Shivneil Prasad <sprasad0603@gmail.com>
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -11,13 +12,13 @@ RUN apt-get update && apt-get install -y \
 
 # Import crontab file
 #ADD ./crontab /etc/crontab
-RUN touch /var/log/cron.log /etc/crontab && mkdir -p /var/log/supervisor /etc/cron.daily
+RUN touch /var/log/cron.log /etc/crontab /var/log/syslog && mkdir -p /var/log/supervisor /etc/cron.daily
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY transmission-blocklist-updater.sh /etc/cron.daily/transmission-blocklist-updater
-# && chmod +x /etc/cron.daily/transmission-blocklist-updater.sh
+
+COPY settings.json.template transmission-start.sh first-run.sh /
 
 # Define default command
-CMD ["/usr/bin/supervisord"]
-#CMD rsyslogd && cron && tail -f /var/log/syslog /var/log/cron.log
+CMD ["/transmission-start.sh"]
