@@ -23,6 +23,13 @@ else
     echo "Current settings file will not be overwritten."
 fi
 
+# Run initial blocklist update
+mv /urls.sh /etc/transmission-daemon/
+if [[ ! -d /etc/transmission-daemon/blocklists ]]; then
+    mkdir -p /etc/transmission-daemon/blocklists
+fi
+/etc/cron.daily/transmission-blocklist-updater
+
 echo "Initial setup finished"
 # Remove the first-run script if it completes successfully once
 rm /first-run.sh

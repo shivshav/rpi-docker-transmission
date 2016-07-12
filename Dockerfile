@@ -18,7 +18,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY transmission-blocklist-updater.sh /etc/cron.daily/transmission-blocklist-updater
 
-COPY settings.json.template transmission-start.sh first-run.sh /
+COPY settings.json.template urls.sh transmission-start.sh first-run.sh /
 
 # Define default command
 CMD ["/transmission-start.sh"]

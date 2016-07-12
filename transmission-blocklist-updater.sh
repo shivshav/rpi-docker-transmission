@@ -25,38 +25,19 @@ fi
 
 declare -a urls list
 
-# *****BEGIN USER-DEFINED LIST SECTION*****
-# Add indexed download urls into the urls[] array.
-# Add associated name into the lists[] array at the same index.
+# Source the user-defined blocklists file
+if [[ -f $TRANSMISSION_HOME/urls.sh ]]; then
+    source $TRANSMISSION_HOME/urls.sh
+else
+    echo "User-defined URL file for blocklists is missing. Please create one at $TRANSMISSION_HOME/urls.sh. Exiting..."
+    exit 1
+fi
 
-list[0]="tbgprimarythreats"
-urls[0]="http://list.iblocklist.com/?list=ijfqtofzixtwayqovmxn&fileformat=p2p&archiveformat=gz"
-
-list[1]="bluetacklevel1"
-urls[1]="http://list.iblocklist.com/?list=bt_level1&fileformat=p2p&archiveformat=gz"
-
-list[2]="badpeers"
-urls[2]="http://list.iblocklist.com/?list=bt_templist&fileformat=p2p&archiveformat=gz"
-
-list[3]="cn"
-urls[3]="http://list.iblocklist.com/?list=cn&fileformat=p2p&archiveformat=gz"
-
-list[4]="ru"
-urls[4]="http://list.iblocklist.com/?list=ru&fileformat=p2p&archiveformat=gz"
-
-# *****END USER-DEFINED LIST SECTION*****
-
-declare -i ix=0 sz=${#urls[@]} flag=0
+declare -i sz=${#blocklists[@]} flag=0
 # Make sure we actually defined something.
 if [ $sz -lt 1 ]; then
     echo "There are no blocklist url's defined!"
-    echo "Hello!"
     exit 2
-fi
-# Make sure both arrays have same # of indices
-if [ $sz -ne ${#list[@]} ]; then
-    echo "Index size mismatch between 'list' and 'url' arrays!"
-    exit 3
 fi
 
 # Move into blocklists dir.
@@ -67,24 +48,24 @@ rm -f ./*
 echo "Updating Blocklists..."
 
 # Traverse url[] array and download lists to list[] name.
-for ((; ix < sz; ix++ )); do
-  wget -q "${urls[$ix]}" -O "${list[$ix]}.gz"
+for list_name in "${!blocklists[@]}"; do
+  wget -q "${blocklists[$list_name]}" -O "${list_name}.gz"
   if [ $? -ne 0 ]; then
-    echo "Error retrieving '${list[$ix]}' blocklist!"
-    rm -f "${list[$ix]}.gz"
+    echo "Error retrieving '${list_name}' blocklist!"
+    rm -f "${list_name}.gz"
     continue
   else 
-    echo "'${list[$ix]}' blocklist archive downloaded"
+    echo "'${list_name}' blocklist archive downloaded"
   fi
 
   # Make sure we can unzip the file.
-  gunzip "${list[$ix]}.gz" >/dev/null 2>&1
+  gunzip "${list_name}.gz" >/dev/null 2>&1
   if [ $? -eq 0 ]; then
     (( flag++ ))
-    echo ".... Blocklist ${list[$ix]} updated."
+    echo ".... Blocklist ${list_name} updated."
   else
-    rm -f "${list[$ix]}.gz"
-    echo ".... Blocklist ${list[$ix]} NOT updated!"
+    rm -f "${list_name}.gz"
+    echo ".... Blocklist ${list_name} NOT updated!"
   fi
 done
 
