@@ -12,13 +12,13 @@
     "blocklist-url": "http://www.example.com/blocklist", 
     "cache-size-mb": 4, 
     "dht-enabled": true, 
-    "download-dir": "/var/lib/transmission-daemon/completed", 
+    "download-dir": "/var/lib/transmission-daemon/downloads/completed", 
     "download-queue-enabled": true, 
     "download-queue-size": 5, 
     "encryption": 1, 
     "idle-seeding-limit": 30, 
     "idle-seeding-limit-enabled": true, 
-    "incomplete-dir": "/var/lib/transmission-daemon/incomplete",
+    "incomplete-dir": "/var/lib/transmission-daemon/downloads/incomplete",
     "incomplete-dir-enabled": true, 
     "lpd-enabled": false, 
     "message-level": 2, 
@@ -62,6 +62,6 @@
     "umask": 18, 
     "upload-slots-per-torrent": 14, 
     "utp-enabled": true,
-    "watch-dir": "/var/lib/transmission-daemon/watch",
+    "watch-dir": "/var/lib/transmission-daemon/downloads/watch",
     "watch-dir-enabled": true
 }
